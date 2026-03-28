@@ -236,24 +236,6 @@ void UART4_IRQHandler(void)
 {
   /* USER CODE BEGIN UART4_IRQn 0 */
 
-  if (__HAL_UART_GET_FLAG(&huart4, UART_FLAG_IDLE))
-  {
-    __HAL_UART_CLEAR_IDLEFLAG(&huart4);
-
-    // 计算 DMA 接收到的数据长度
-    uint32_t len = UART_RX_BUF_SIZE - __HAL_DMA_GET_COUNTER(huart4.hdmarx);
-
-    if (len > 0)
-    {
-        // 转发数据到 USB CDC 通道 0
-        CDC_Transmit(0, uart_rx_buf, (uint16_t)len);
-
-        // 重启 DMA 接收以等待下一帧数据
-        HAL_UART_DMAStop(&huart4);
-        HAL_UARTEx_ReceiveToIdle_DMA(&huart4, uart_rx_buf, UART_RX_BUF_SIZE);
-    }
-  }
-
   /* USER CODE END UART4_IRQn 0 */
   HAL_UART_IRQHandler(&huart4);
   /* USER CODE BEGIN UART4_IRQn 1 */

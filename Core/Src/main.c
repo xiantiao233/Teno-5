@@ -142,9 +142,13 @@ int main(void)
   MX_UART4_Init();
   /* USER CODE BEGIN 2 */
   MX_USB_DEVICE_Init();
-  if (HAL_UART_Receive_DMA(&huart4, uart_rx_buf, UART_RX_BUF_SIZE) != HAL_OK) {
+
+  // 【修改这里】：使用扩展函数开启接收，它会自动开启空闲中断(IDLE IT)
+    if (HAL_UARTEx_ReceiveToIdle_DMA(&huart4, uart_rx_buf, UART_RX_BUF_SIZE) != HAL_OK) {
         Error_Handler();
     }
+    /* 建议关闭半传输中断(Half Transfer)，否则数据接收过半时会触发额外中断导致错乱 */
+    __HAL_DMA_DISABLE_IT(huart4.hdmarx, DMA_IT_HT);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -207,7 +211,29 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+/**
+  * @brief  串口空闲中断回调函数 (由 HAL_UART_IRQHandler 自动调用)
+  * @param  huart: 串口句柄
+  * @param  Size:  本次 DMA 接收到的数据总长度
+  */
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+    if (huart->Instance == UART4)
+    {
+        // 1. 停止当前 DMA（为了强制复位 DMA 写入指针到 buffer 起始地址，应对循环模式带来的影响）
+        HAL_UART_DMAStop(&huart4);
 
+        // 2. 将收到的不定长数据通过 USB CDC 转发
+        if (Size > 0)
+        {
+            CDC_Transmit(0, uart_rx_buf, Size);
+        }
+
+        // 3. 重新开启基于空闲中断的 DMA 接收，等待下一帧数据
+        HAL_UARTEx_ReceiveToIdle_DMA(&huart4, uart_rx_buf, UART_RX_BUF_SIZE);
+        __HAL_DMA_DISABLE_IT(huart->hdmarx, DMA_IT_HT); // 每次重新开启后再次禁用 HT 中断
+    }
+}
 /* USER CODE END 4 */
 
 /**
