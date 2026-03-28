@@ -46,6 +46,18 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    /* 开启 GPIOA 时钟 */
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    /* 配置 PA0 到 PA7 */
+    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
+                            |GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;    // 输入模式
+    GPIO_InitStruct.Pull = GPIO_PULLUP;        // 开启内部上拉
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
 /* USER CODE BEGIN 2 */
