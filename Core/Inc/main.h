@@ -57,9 +57,25 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Button1_Pin GPIO_PIN_0
+#define Button1_GPIO_Port GPIOA
+#define Button2_Pin GPIO_PIN_1
+#define Button2_GPIO_Port GPIOA
+#define Button3_Pin GPIO_PIN_2
+#define Button3_GPIO_Port GPIOA
+#define Button4_Pin GPIO_PIN_3
+#define Button4_GPIO_Port GPIOA
+#define Button5_Pin GPIO_PIN_4
+#define Button5_GPIO_Port GPIOA
+#define Button6_Pin GPIO_PIN_5
+#define Button6_GPIO_Port GPIOA
+#define Button7_Pin GPIO_PIN_6
+#define Button7_GPIO_Port GPIOA
+#define Button8_Pin GPIO_PIN_7
+#define Button8_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-
+#define UART_RX_BUF_SIZE 512
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

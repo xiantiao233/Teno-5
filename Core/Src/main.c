@@ -18,6 +18,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
+#include "usart.h"
 #include "usb.h"
 #include "gpio.h"
 
@@ -45,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint8_t uart_rx_buf[UART_RX_BUF_SIZE];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -135,7 +137,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USB_PCD_Init();
+  MX_UART4_Init();
   /* USER CODE BEGIN 2 */
   MX_USB_DEVICE_Init();
   /* USER CODE END 2 */

@@ -44,7 +44,7 @@ extern "C" {
 
 #define HID_KEYBOARD_STR_DESC                               "STM32 USB KEYBOARD"
 
-#define HID_KEYBOARD_EPIN_SIZE                              0x13U
+#define HID_KEYBOARD_EPIN_SIZE                              0x08U
 
 #define HID_KEYBOARD_CONFIG_DESC_SIZE                       34U
 #define HID_KEYBOARD_DESC_SIZE                              9U

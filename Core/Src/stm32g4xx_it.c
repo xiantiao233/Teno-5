@@ -22,6 +22,7 @@
 #include "stm32g4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "usbd_cdc_acm_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,9 +56,11 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern DMA_HandleTypeDef hdma_uart4_rx;
+extern UART_HandleTypeDef huart4;
 extern PCD_HandleTypeDef hpcd_USB_FS;
 /* USER CODE BEGIN EV */
-
+extern uint8_t uart_rx_buf[UART_RX_BUF_SIZE];
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -199,6 +202,20 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles DMA1 channel1 global interrupt.
+  */
+void DMA1_Channel1_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_uart4_rx);
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 1 */
+}
+
+/**
   * @brief This function handles USB low priority interrupt remap.
   */
 void USB_LP_IRQHandler(void)
@@ -212,6 +229,37 @@ void USB_LP_IRQHandler(void)
   /* USER CODE END USB_LP_IRQn 1 */
 }
 
+/**
+  * @brief This function handles UART4 global interrupt.
+  */
+void UART4_IRQHandler(void)
+{
+  /* USER CODE BEGIN UART4_IRQn 0 */
+
+  if (__HAL_UART_GET_FLAG(&huart4, UART_FLAG_IDLE))
+  {
+    __HAL_UART_CLEAR_IDLEFLAG(&huart4);
+
+    // 计算 DMA 接收到的数据长度
+    uint32_t len = UART_RX_BUF_SIZE - __HAL_DMA_GET_COUNTER(huart4.hdmarx);
+
+    if (len > 0)
+    {
+        // 转发数据到 USB CDC 通道 0
+        CDC_Transmit(0, uart_rx_buf, (uint16_t)len);
+
+        // 重启 DMA 接收以等待下一帧数据
+        HAL_UART_DMAStop(&huart4);
+        HAL_UART_Receive_DMA(&huart4, uart_rx_buf, UART_RX_BUF_SIZE);
+    }
+  }
+
+  /* USER CODE END UART4_IRQn 0 */
+  HAL_UART_IRQHandler(&huart4);
+  /* USER CODE BEGIN UART4_IRQn 1 */
+
+  /* USER CODE END UART4_IRQn 1 */
+}
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
