@@ -230,7 +230,7 @@ void USB_LP_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles UART4 global interrupt.
+  * @brief This function handles UART4 global interrupt / UART4 wake-up interrupt through EXTI line 34.
   */
 void UART4_IRQHandler(void)
 {
@@ -242,6 +242,7 @@ void UART4_IRQHandler(void)
 
   /* USER CODE END UART4_IRQn 1 */
 }
+
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */

@@ -33,7 +33,7 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-extern UART_HandleTypeDef huart4;
+
 /* USER CODE END PV */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -404,37 +404,28 @@ static int8_t CDC_Control(uint8_t cdc_ch, uint8_t cmd, uint8_t *pbuf, uint16_t l
 }
 
 /**
-  * @brief  从 USB 接收到数据后的回调函数
-  * @param  cdc_ch: CDC 端口号 (0, 1, 2...)
-  * @param  Buf: 接收到的数据缓冲区指针
-  * @param  Len: 接收到的数据长度
+  * @brief  Data received over USB OUT endpoint are sent over CDC interface
+  *         through this function.
+  *
+  *         @note
+  *         This function will issue a NAK packet on any OUT packet received on
+  *         USB endpoint until exiting this function. If you exit this function
+  *         before transfer is complete on CDC interface (ie. using DMA controller)
+  *         it will result in receiving more data while previous ones are still
+  *         not sent.
+  *
+  * @param  Buf: Buffer of data to be received
+  * @param  Len: Number of data received (in bytes)
+  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
   */
 static int8_t CDC_Receive(uint8_t cdc_ch, uint8_t *Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
+  //HAL_UART_Transmit_DMA(CDC_CH_To_UART_Handle(cdc_ch), Buf, *Len);
+  CDC_Transmit(cdc_ch, Buf, *Len); // echo back on same channel
 
-  // 仅处理你指定的透传通道（假设为通道 0）
-  if (cdc_ch == 0)
-  {
-      /* * 使用 DMA 将数据从 USB 缓冲区发送到 UART4。
-       * 这样做是“非阻塞”的，CPU 会立即返回去处理 HID 扫描任务，
-       * 从而避免了 230400 高波特率下数据发送导致的系统卡顿。
-       */
-      HAL_UART_Transmit_DMA(&huart4, Buf, (uint16_t)(*Len));
-
-      /* * 重要提示：
-       * 由于使用 DMA 异步发送，如果数据量很大，UART 还没发完 Buf 里的内容，
-       * 下方 USBD_CDC_ReceivePacket 就会允许 USB 接收下一个数据包并覆盖 Buf。
-       * * 优化建议：为了防止数据覆盖（即实现硬件流控），你应该将下方的
-       * USBD_CDC_SetRxBuffer 和 USBD_CDC_ReceivePacket 这两行代码移到
-       * HAL_UART_TxCpltCallback (串口发送完成回调) 中执行。
-       */
-  }
-
-  // 准备接收下一个 USB 数据包
   USBD_CDC_SetRxBuffer(cdc_ch, &hUsbDevice, &Buf[0]);
   USBD_CDC_ReceivePacket(cdc_ch, &hUsbDevice);
-
   return (USBD_OK);
   /* USER CODE END 6 */
 }

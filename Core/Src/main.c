@@ -77,7 +77,7 @@ void Keyboard_Scan_Task(void)
 
     if (current_key_state != last_key_state)
     {
-        //HAL_Delay(5); // 缩短消抖时间以提高灵敏度
+        HAL_Delay(5); // 缩短消抖时间以提高灵敏度
         current_key_state = (uint16_t)(GPIOA->IDR & 0x0FFF);
 
         if (current_key_state != last_key_state)
@@ -90,7 +90,7 @@ void Keyboard_Scan_Task(void)
 
             for (int i = 0; i < 12; i++) // 遍历 12 个引脚
             {
-                if (current_key_state & (1 << i) && i)
+                if (current_key_state & (1 << i))
                 {
                     if (report_idx < 19)
                     {
@@ -142,6 +142,7 @@ int main(void)
   MX_UART4_Init();
   /* USER CODE BEGIN 2 */
   MX_USB_DEVICE_Init();
+
 
   // 【修改这里】：使用扩展函数开启接收，它会自动开启空闲中断(IDLE IT)
     if (HAL_UARTEx_ReceiveToIdle_DMA(&huart4, uart_rx_buf, UART_RX_BUF_SIZE) != HAL_OK) {
