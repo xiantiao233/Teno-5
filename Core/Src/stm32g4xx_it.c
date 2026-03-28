@@ -250,7 +250,7 @@ void UART4_IRQHandler(void)
 
         // 重启 DMA 接收以等待下一帧数据
         HAL_UART_DMAStop(&huart4);
-        HAL_UART_Receive_DMA(&huart4, uart_rx_buf, UART_RX_BUF_SIZE);
+        HAL_UARTEx_ReceiveToIdle_DMA(&huart4, uart_rx_buf, UART_RX_BUF_SIZE);
     }
   }
 
