@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usb_device.h"
+#include "usbd_hid_keyboard.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,7 +56,69 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+#include "usbd_composite.h" // 确保包含了复合设备的头文件
 
+// 引入 USB 句柄 (根据你的实际工程可能在 usb_device.h 或是 usbd_core.c 中定义)
+extern USBD_HandleTypeDef hUsbDevice;
+
+// 定义 PA0-PA7 对应的 HID 键码 (w, e, d, c, x, z, a, q)
+const uint8_t KEYCODE_MAP[8] = {
+    0x1A, // PA0 -> 'w'
+    0x08, // PA1 -> 'e'
+    0x07, // PA2 -> 'd'
+    0x06, // PA3 -> 'c'
+    0x1B, // PA4 -> 'x'
+    0x1D, // PA5 -> 'z'
+    0x04, // PA6 -> 'a'
+    0x14  // PA7 -> 'q'
+};
+
+void Keyboard_Scan_Task(void)
+{
+    // 用于记录上一次的按键状态，只有状态改变时才发送 USB 数据
+    static uint8_t last_key_state = 0;
+
+    // 读取 PA0-PA7 的电平状态。
+    // 按下时为高电平(1)，未按下时为低电平(0)
+    uint8_t current_key_state = (uint8_t)(GPIOA->IDR & 0x00FF);
+
+    // 如果按键状态发生了变化 (有按键按下或松开)
+    if (current_key_state != last_key_state)
+    {
+        //HAL_Delay(10); // 简单的软件消抖延迟
+
+        // 再次读取确认状态
+        current_key_state = (uint8_t)(GPIOA->IDR & 0x00FF);
+
+        if (current_key_state != last_key_state)
+        {
+            uint8_t hid_report[8] = {0}; // 初始化 8 字节空报文
+            uint8_t report_idx = 2;      // 普通按键从第 2 字节开始存放
+
+            // 遍历 8 个引脚的状态
+            for (int i = 0; i < 8; i++)
+            {
+                // 如果当前引脚状态为 1 (触发)
+                if (current_key_state & (1 << i))
+                {
+                    if (report_idx < 8) // 标准键盘一次最多发 6 个键 (无冲限制)
+                    {
+                        hid_report[report_idx] = KEYCODE_MAP[i];
+                        report_idx++;
+                    }
+                }
+            }
+
+            // 发送 HID 键盘报文
+            // 注意：下面这个函数名是 AL94 包提供的典型键盘发送 API。
+            // 如果编译提示找不到该函数，请检查 AL94 源码目录中 HID_KEYBOARD 相关的 .h 文件确认准确函数名。
+            USBD_HID_Keybaord_SendReport(&hUsbDevice, hid_report, 8); // 注意这里的 a 和 o 写反了
+
+            // 更新状态
+            last_key_state = current_key_state;
+        }
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -96,6 +159,22 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //Keyboard_Scan_Task(); // 调用键盘扫描与发送任务
+
+	  // 2. 加入自动打字测试代码 (每 5 秒自动输入一个 'a')
+	        static uint32_t last_test_tick = 0;
+	        if (HAL_GetTick() - last_test_tick > 5000)
+	        {
+	            last_test_tick = HAL_GetTick();
+
+	            uint8_t test_report[8] = {0, 0, 0x04, 0, 0, 0, 0, 0}; // 0x04 是字母 'a'
+	            USBD_HID_Keybaord_SendReport(&hUsbDevice, test_report, 8); // 发送按下
+
+	            HAL_Delay(20); // 停顿 20ms 模拟手指按压时间
+
+	            uint8_t release_report[8] = {0};
+	            USBD_HID_Keybaord_SendReport(&hUsbDevice, release_report, 8); // 发送松开
+	        }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

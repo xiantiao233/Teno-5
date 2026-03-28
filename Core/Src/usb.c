@@ -101,7 +101,14 @@ void HAL_PCD_MspDeInit(PCD_HandleTypeDef* pcdHandle)
     /* USB interrupt Deinit */
     HAL_NVIC_DisableIRQ(USB_LP_IRQn);
   /* USER CODE BEGIN USB_MspDeInit 1 */
-
+    // 必须手动为 G4 的端点分配 PMA 内存地址
+    // 0x00/0x80 是控制端点，0x81/0x01/0x82 是串口，0x83 是键盘
+    HAL_PCDEx_PMAConfig(pcdHandle, 0x00, PCD_SNG_BUF, 0x18);
+    HAL_PCDEx_PMAConfig(pcdHandle, 0x80, PCD_SNG_BUF, 0x58);
+    HAL_PCDEx_PMAConfig(pcdHandle, 0x81, PCD_SNG_BUF, 0x98);   // CDC IN
+    HAL_PCDEx_PMAConfig(pcdHandle, 0x01, PCD_SNG_BUF, 0xD8);   // CDC OUT
+    HAL_PCDEx_PMAConfig(pcdHandle, 0x82, PCD_SNG_BUF, 0x118);  // CDC CMD
+    HAL_PCDEx_PMAConfig(pcdHandle, 0x83, PCD_SNG_BUF, 0x158);  // HID IN (必须与配置的一致)
   /* USER CODE END USB_MspDeInit 1 */
   }
 }

@@ -34,7 +34,7 @@
 #define _USBD_USE_HS      false
 
 /*---------- _USBD_USE_CDC_ACM  -----------*/
-#define _USBD_USE_CDC_ACM      false
+#define _USBD_USE_CDC_ACM      true
 
 /*---------- _USBD_CDC_ACM_COUNT  -----------*/
 #define _USBD_CDC_ACM_COUNT      1

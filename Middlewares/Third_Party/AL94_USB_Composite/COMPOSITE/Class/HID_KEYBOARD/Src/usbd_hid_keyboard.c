@@ -46,7 +46,7 @@ EndBSPDependencies */
 #include "usbd_hid_keyboard.h"
 #include "usbd_ctlreq.h"
 
-#define _HID_KEYBOARD_IN_EP 0x81U
+#define _HID_KEYBOARD_IN_EP 0x83U
 #define _HID_KEYBOARD_ITF_NBR 0x00
 #define _HID_KEYBOARD_STR_DESC_IDX 0x00U
 

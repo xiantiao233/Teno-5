@@ -69,14 +69,24 @@
 #if (USBD_USE_DFU == 1)
 #define USBD_PID                      57105 // for DFU PID must be 57105, ST proprietary modification
 #else
-#define USBD_PID                      21155
+#define USBD_PID                      21156
 #endif
-#define USBD_PRODUCT_STRING           "TENODX COMPOSITE DEVICE"
+#define USBD_PRODUCT_STRING           "STM32 COMPOSITE DEVICE"
 #define USBD_CONFIGURATION_STRING     "CONFIGURATION 0"
 #define USBD_INTERFACE_STRING         "COMPOSITE INTERFACE"
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
+// 取消上方 CubeMX 生成的默认定义
+#undef USBD_PID
+#undef USBD_PRODUCT_STRING
 
+// 重新定义为你自己的值 (注意这次我把 PID 改成了 21160 强制系统刷新)
+#define USBD_PID                      21161
+#define USBD_PRODUCT_STRING           "TENODX COMPOSITE DEVICE"
+
+// 取消 usbd_cdc_acm.h 中的默认串口名称定义
+#undef CDC_ACM_STR_DESC
+#define CDC_ACM_STR_DESC              "TENODX Serial Port %d"
 /* USER CODE END PRIVATE_DEFINES */
 
 /**
