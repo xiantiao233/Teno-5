@@ -1,0 +1,7 @@
+/Debug/
+/Release/
+/build
+teno_cli.spec
+teno_config_backup.yaml
+/__pycache__
+*.tmp

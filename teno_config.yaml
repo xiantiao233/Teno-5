@@ -1,0 +1,193 @@
+magic: 1330529620
+version: 256
+enable_fixed_trigger_mode: 1
+fixed_trigger_default_a: 50300
+fixed_trigger_default_b: 48000
+fixed_trigger_default_c: 47000
+fixed_trigger_default_d: 50000
+fixed_trigger_default_e: 50000
+variance_thresh_bcde: 600
+variance_thresh_bcde_down: 300
+var_thresh_b: 530
+var_thresh_c: 400
+var_thresh_d: 450
+var_thresh_e: 150
+variance_thresh_a_default: 5000
+var001_default: 600
+area_a_release_drop_thresh: 1500
+area_a_press_rise_thresh: 1000
+area_a_press_break_thresh: 700
+area_a_fast_slide_fps_limit: -1
+rea_a_down_tr_up: 0.8
+rea_a_down_tr_down: 0.25
+channels:
+- block: A
+  mask: 64
+  default_thresh: 30
+  var_thresh: 1200
+  var001_thresh: 600
+- block: C
+  mask: 131072
+  default_thresh: 5
+  var_thresh: 0
+  var001_thresh: 0
+- block: E
+  mask: 4294967296
+  default_thresh: 13
+  var_thresh: 0
+  var001_thresh: 0
+- block: D
+  mask: 16777216
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: B
+  mask: 8192
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: A
+  mask: 32
+  default_thresh: 30
+  var_thresh: 1200
+  var001_thresh: 600
+- block: E
+  mask: 2147483648
+  default_thresh: 13
+  var_thresh: 0
+  var001_thresh: 0
+- block: D
+  mask: 8388608
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: B
+  mask: 4096
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: A
+  mask: 16
+  default_thresh: 30
+  var_thresh: 1200
+  var001_thresh: 600
+- block: E
+  mask: 1073741824
+  default_thresh: 13
+  var_thresh: 0
+  var001_thresh: 0
+- block: D
+  mask: 4194304
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: B
+  mask: 2048
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: A
+  mask: 8
+  default_thresh: 30
+  var_thresh: 1200
+  var001_thresh: 600
+- block: E
+  mask: 536870912
+  default_thresh: 13
+  var_thresh: 0
+  var001_thresh: 0
+- block: D
+  mask: 2097152
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: B
+  mask: 1024
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: A
+  mask: 4
+  default_thresh: 54689
+  var_thresh: 1200
+  var001_thresh: 600
+- block: C
+  mask: 65536
+  default_thresh: 5
+  var_thresh: 0
+  var001_thresh: 0
+- block: E
+  mask: 268435456
+  default_thresh: 13
+  var_thresh: 0
+  var001_thresh: 0
+- block: D
+  mask: 1048576
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: B
+  mask: 512
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: A
+  mask: 2
+  default_thresh: 30
+  var_thresh: 1200
+  var001_thresh: 600
+- block: E
+  mask: 134217728
+  default_thresh: 13
+  var_thresh: 0
+  var001_thresh: 0
+- block: D
+  mask: 524288
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: B
+  mask: 256
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: E
+  mask: 67108864
+  default_thresh: 13
+  var_thresh: 0
+  var001_thresh: 0
+- block: A
+  mask: 1
+  default_thresh: 30
+  var_thresh: 1200
+  var001_thresh: 600
+- block: D
+  mask: 262144
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: B
+  mask: 32768
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: A
+  mask: 128
+  default_thresh: 30
+  var_thresh: 1200
+  var001_thresh: 600
+- block: E
+  mask: 8589934592
+  default_thresh: 13
+  var_thresh: 0
+  var001_thresh: 0
+- block: D
+  mask: 33554432
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
+- block: B
+  mask: 16384
+  default_thresh: 25
+  var_thresh: 0
+  var001_thresh: 0
