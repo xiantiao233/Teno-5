@@ -108,7 +108,7 @@ channels:
   var001_thresh: 0
 - block: A
   mask: 4
-  default_thresh: 54689
+  default_thresh: 55084
   var_thresh: 1200
   var001_thresh: 600
 - block: C

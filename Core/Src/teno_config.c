@@ -15,26 +15,59 @@ extern uint8_t CDC_Transmit(uint8_t ch, uint8_t *Buf, uint16_t Len);
 volatile uint8_t g_ConfigReplyCmd = 0; // 0=不回复, 1=请求全量配置, 3=需发ACK, 4=需发NACK
 
 // 出厂默认通道数据
+// 这里的顺序对应了 C# 原版中的 TouchSheetMapping 物理通道映射顺序
+// 包含区块(A-E)、64-bit掩码、基础灵敏度Threshold、独立方差阈值CustomVarianceOverrides、单独Delta阈值CustomVar001Overrides
+// 出厂默认通道数据
+// 已按每个区块名称 (A1~A8, B1~B8 等) 添加注释，方便区分和修改
+// 出厂默认通道数据
+// 出厂默认通道数据
+// 已经严格按照你提供的高精度 0-33 硬件扫描顺序重新排序
+// 独立方差与 Delta 阈值默认填 -1，代表禁用特殊化，直接回退并使用全局配置
+// 出厂默认通道数据
+// 已严格按照最新提供的 [TouchSheet] INI 0-33 硬件扫描顺序重新覆盖
+// 独立方差与 Delta 阈值默认填 -1，代表禁用特殊化，直接回退并使用全局配置
 static const ChannelConfig_t DEFAULT_CHANNELS[34] = {
-    {'A', 1ULL << 6,  30, 1200, 600}, {'C', 1ULL << 17, 30, 0, 0},
-    {'E', 1ULL << 32, 23, 0, 0},      {'D', 1ULL << 24, 22, 0, 0},
-    {'B', 1ULL << 13, 46, 0, 0},      {'A', 1ULL << 5,  25, 1200, 600},
-    {'E', 1ULL << 31, 28, 0, 0},      {'D', 1ULL << 23, 23, 0, 0},
-    {'B', 1ULL << 12, 35, 0, 0},      {'A', 1ULL << 4,  32, 1200, 600},
-    {'E', 1ULL << 30, 30, 0, 0},      {'D', 1ULL << 22, 38, 0, 0},
-    {'B', 1ULL << 11, 39, 0, 0},      {'A', 1ULL << 3,  47, 1200, 600},
-    {'E', 1ULL << 29, 30, 0, 0},      {'D', 1ULL << 21, 60, 0, 0},
-    {'B', 1ULL << 10, 47, 0, 0},      {'A', 1ULL << 2,  72, 1200, 600},
-    {'C', 1ULL << 16, 25, 0, 0},      {'E', 1ULL << 28, 46, 0, 0},
-    {'D', 1ULL << 20, 60, 0, 0},      {'B', 1ULL << 9,  51, 0, 0},
-    {'A', 1ULL << 1,  51, 1200, 600}, {'E', 1ULL << 27, 35, 0, 0},
-    {'D', 1ULL << 19, 42, 0, 0},      {'B', 1ULL << 8,  56, 0, 0},
-    {'E', 1ULL << 26, 24, 0, 0},      {'A', 1ULL << 0,  30, 1200, 600},
-    {'D', 1ULL << 18, 37, 0, 0},      {'B', 1ULL << 15, 50, 0, 0},
-    {'A', 1ULL << 7,  34, 1200, 600}, {'E', 1ULL << 33, 17, 0, 0},
-    {'D', 1ULL << 25, 24, 0, 0},      {'B', 1ULL << 14, 42, 0, 0}
-};
+    {'D', 1ULL << 24, 25, -1, -1}, // [0]  对应 Channel0=D7
+    {'B', 1ULL << 13, 25, -1, -1}, // [1]  对应 Channel1=B6
+    {'A', 1ULL << 5,  30, -1, -1}, // [2]  对应 Channel2=A6
+    {'E', 1ULL << 31, 13, -1, -1}, // [3]  对应 Channel3=E6
+    {'D', 1ULL << 23, 25, -1, -1}, // [4]  对应 Channel4=D6
 
+    {'B', 1ULL << 12, 25, -1, -1}, // [5]  对应 Channel5=B5
+    {'A', 1ULL << 4,  30, -1, -1}, // [6]  对应 Channel6=A5
+    {'E', 1ULL << 30, 13, -1, -1}, // [7]  对应 Channel7=E5
+    {'D', 1ULL << 22, 25, -1, -1}, // [8]  对应 Channel8=D5
+    {'B', 1ULL << 11, 25, -1, -1}, // [9]  对应 Channel9=B4
+
+    {'A', 1ULL << 3,  30, -1, -1}, // [10] 对应 Channel10=A4
+    {'E', 1ULL << 29, 13, -1, -1}, // [11] 对应 Channel11=E4
+    {'D', 1ULL << 21, 25, -1, -1}, // [12] 对应 Channel12=D4
+    {'B', 1ULL << 10, 25, -1, -1}, // [13] 对应 Channel13=B3
+    {'A', 1ULL << 2,  30, -1, -1}, // [14] 对应 Channel14=A3
+
+    {'C', 1ULL << 16, 5,  -1, -1}, // [15] 对应 Channel15=C1
+    {'E', 1ULL << 28, 13, -1, -1}, // [16] 对应 Channel16=E3
+    {'D', 1ULL << 20, 25, -1, -1}, // [17] 对应 Channel17=D3
+    {'B', 1ULL << 9,  25, -1, -1}, // [18] 对应 Channel18=B2
+    {'A', 1ULL << 1,  30, -1, -1}, // [19] 对应 Channel19=A2
+
+    {'E', 1ULL << 27, 13, -1, -1}, // [20] 对应 Channel20=E2
+    {'D', 1ULL << 19, 25, -1, -1}, // [21] 对应 Channel21=D2
+    {'B', 1ULL << 8,  25, -1, -1}, // [22] 对应 Channel22=B1
+    {'A', 1ULL << 0,  30, -1, -1}, // [23] 对应 Channel23=A1
+    {'E', 1ULL << 26, 13, -1, -1}, // [24] 对应 Channel24=E1
+
+    {'D', 1ULL << 18, 25, -1, -1}, // [25] 对应 Channel25=D1
+    {'B', 1ULL << 15, 25, -1, -1}, // [26] 对应 Channel26=B8
+    {'A', 1ULL << 7,  30, -1, -1}, // [27] 对应 Channel27=A8
+    {'E', 1ULL << 33, 13, -1, -1}, // [28] 对应 Channel28=E8
+    {'D', 1ULL << 25, 25, -1, -1}, // [29] 对应 Channel29=D8
+
+    {'B', 1ULL << 14, 25, -1, -1}, // [30] 对应 Channel30=B7
+    {'A', 1ULL << 6,  30, -1, -1}, // [31] 对应 Channel31=A7
+    {'C', 1ULL << 17, 5,  -1, -1}, // [32] 对应 Channel32=C2
+    {'E', 1ULL << 32, 13, -1, -1}  // [33] 对应 Channel33=E7
+};
 void Config_Init(void) {
     TenoConfig_t* flash_cfg = (TenoConfig_t*)FLASH_CONFIG_ADDR;
 
@@ -42,33 +75,37 @@ void Config_Init(void) {
     if (flash_cfg->magic == TENO_MAGIC_NUM) {
         memcpy(&g_TenoConfig, flash_cfg, sizeof(TenoConfig_t));
     } else {
-        // 第一次烧录或数据损坏，加载默认设定 (你以前的 #define 参数)
+        // 第一次烧录或数据损坏，加载默认设定 (对应你以前的 C# ini 配置文件参数)
         memset(&g_TenoConfig, 0, sizeof(TenoConfig_t));
         g_TenoConfig.magic = TENO_MAGIC_NUM;
         g_TenoConfig.version = 0x0100;
 
-        g_TenoConfig.enable_fixed_trigger_mode = 1;
-        g_TenoConfig.fixed_trigger_default_a = 49600;
-        g_TenoConfig.fixed_trigger_default_b = 47500;
-        g_TenoConfig.fixed_trigger_default_c = 47000;
-        g_TenoConfig.fixed_trigger_default_d = 49500;
-        g_TenoConfig.fixed_trigger_default_e = 49500;
+        // --- 基础模式与固定触发基础设置 ---
+        g_TenoConfig.enable_fixed_trigger_mode = 1;     // 启用固定触发模式 (EnableFixedTriggerMode)
+        g_TenoConfig.fixed_trigger_default_a = 56000;   // A区固定触发基础 (FixedTriggerDefaultA)
+        g_TenoConfig.fixed_trigger_default_b = 47500;   // B区固定触发基础 (FixedTriggerDefaultB)
+        g_TenoConfig.fixed_trigger_default_c = 47000;   // C区固定触发基础 (FixedTriggerDefaultC)
+        g_TenoConfig.fixed_trigger_default_d = 49500;   // D区固定触发基础 (FixedTriggerDefaultD)
+        g_TenoConfig.fixed_trigger_default_e = 49500;   // E区固定触发基础 (FixedTriggerDefaultE)
 
-        g_TenoConfig.variance_thresh_bcde = 600;
-        g_TenoConfig.variance_thresh_bcde_down = 300;
-        g_TenoConfig.var_thresh_b = 600;
-        g_TenoConfig.var_thresh_c = 800;
-        g_TenoConfig.var_thresh_d = 800;
-        g_TenoConfig.var_thresh_e = 600;
-        g_TenoConfig.variance_thresh_a_default = 1200;
-        g_TenoConfig.var001_default = 600;
+        // --- 方差与突变阈值设置 ---
+        g_TenoConfig.variance_thresh_bcde = 600;        // BCDE区方差突变触发阈值 (VarianceThresholdBCDE)
+        g_TenoConfig.variance_thresh_bcde_down = 300;   // BCDE区方差突变触发阈值, 下降 (VarianceThresholdBCDEDown)
+        g_TenoConfig.var_thresh_b = 600;                // B区方varThresh阈值 (VarThreshB)
+        g_TenoConfig.var_thresh_c = 800;                // C区方varThresh阈值 (VarThreshC)
+        g_TenoConfig.var_thresh_d = 800;                // D区方varThresh阈值 (VarThreshD)
+        g_TenoConfig.var_thresh_e = 600;                // E区方varThresh阈值 (VarThreshE)
 
-        g_TenoConfig.area_a_release_drop_thresh = 1500;
-        g_TenoConfig.area_a_press_rise_thresh = 1000;
-        g_TenoConfig.area_a_press_break_thresh = 800;
-        g_TenoConfig.area_a_fast_slide_fps_limit = -1;
-        g_TenoConfig.rea_a_down_tr_up = 0.9f;
-        g_TenoConfig.rea_a_down_tr_down = 0.2f;
+        g_TenoConfig.variance_thresh_a_default = 2500;  // A区默认方差突变阈值 (VarianceThresholdADefault)
+        g_TenoConfig.var001_default = 0xFF00;              // A区Delta触发默认阈值(var001) (Var001Default)
+
+        // --- A区专用状态机与基线参数 ---
+        g_TenoConfig.area_a_release_drop_thresh = 1800; // A区松开判定下降阈值 (AreaAReleaseDropThreshold)
+        g_TenoConfig.area_a_press_rise_thresh = 1500;   // A区按下判定上升阈值 (AreaAPressRiseThreshold)
+        g_TenoConfig.area_a_press_break_thresh = 800;   // A区防断管子偏移值 (AreaAPressBreakThreshold)
+        g_TenoConfig.area_a_fast_slide_fps_limit = -1;  // A区瞬发限制 (AreaAFastSlideFpsLimit)
+        g_TenoConfig.rea_a_down_tr_up = 0.9f;           // A区未触发时的固定基线变化检测，上升 (ReaADonwTrUP)
+        g_TenoConfig.rea_a_down_tr_down = 0.2f;         // A区未触发时的固定基线变化检测，下降 (ReaADonwTrDown)
 
         memcpy(g_TenoConfig.channels, DEFAULT_CHANNELS, sizeof(DEFAULT_CHANNELS));
     }

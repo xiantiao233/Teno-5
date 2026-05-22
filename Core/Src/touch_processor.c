@@ -192,15 +192,23 @@ static int ProcessChannel(int chIdx, uint16_t rawVal) {
                 if (tr->lastTouchFrames > 0) {
                     tr->lastTouchFrames--;
                 } else {
-                    bool isFastSlide = (delta > cfg->var001_thresh || variance > cfg->var_thresh);
-                    bool isRising = (delta > 0);
-                    bool isNotPrePress = (raw < (effThreshold - 800));
+                	// ================= 修改开始 =================
+                	                    // 规定：如果设为 -1 (或 0)，则禁用独立配置，自动读取全局默认值
+                	                    int active_var_thresh = (cfg->var_thresh <= 0) ? g_TenoConfig.variance_thresh_a_default : cfg->var_thresh;
+                	                    int active_var001_thresh = (cfg->var001_thresh <= 0) ? g_TenoConfig.var001_default : cfg->var001_thresh;
 
-                    if (isFastSlide && isRising && isNotPrePress) {
-                        tr->currentStatus = 1;
-                        // [替换] AREA_A_FAST_SLIDE_FPS_LIMIT
-                        tr->lastTouchFrames = g_TenoConfig.area_a_fast_slide_fps_limit >= 0 ? g_TenoConfig.area_a_fast_slide_fps_limit : 10;
-                    }
+                	                    // 使用 active 变量进行判断
+                	                    bool isFastSlide = (delta > active_var001_thresh || variance > active_var_thresh);
+                	                    // ================= 修改结束 =================
+
+                	                    bool isRising = (delta > 0);
+                	                    bool isNotPrePress = (raw < (effThreshold - 800));
+
+                	                    if (isFastSlide && isRising && isNotPrePress) {
+                	                        tr->currentStatus = 1;
+                	                        // [替换] AREA_A_FAST_SLIDE_FPS_LIMIT
+                	                        tr->lastTouchFrames = g_TenoConfig.area_a_fast_slide_fps_limit >= 0 ? g_TenoConfig.area_a_fast_slide_fps_limit : 10;
+                	                    }
                 }
             }
         }
